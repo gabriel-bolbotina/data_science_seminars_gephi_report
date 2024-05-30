@@ -1,0 +1,17 @@
+# This query retrieves painters with their nationality, birth and death dates, art movement, and school, born between 1300 and 1800
+SELECT ?painter ?painterLabel ?nationalityLabel ?birthDate ?deathDate ?artMovementLabel ?schoolLabel
+WHERE {
+  ?painter wdt:P31 wd:Q5;   # Instance of human
+           wdt:P106 wd:Q1028181;  # Occupation: painter
+           wdt:P569 ?birthDate.    # Birth date
+
+  FILTER (?birthDate >= "1300-01-01T00:00:00Z"^^xsd:dateTime && ?birthDate <= "1800-12-31T23:59:59Z"^^xsd:dateTime)
+
+  ?painter wdt:P27 ?nationality.   # Nationality
+  ?painter wdt:P570 ?deathDate.    # Death date
+  OPTIONAL { ?painter wdt:P135 ?artMovement. }  # Art movement
+  OPTIONAL { ?painter wdt:P1416 ?school. }      # School
+
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}
+ORDER BY ?nationalityLabel ?birthDate
